@@ -1,5 +1,7 @@
 package com.zaya.event;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.zaya.job.Job;
 
 public class ZayaEvent {
@@ -7,7 +9,10 @@ public class ZayaEvent {
 	private Job job;
 	private Object data;
 
+	public static final AtomicInteger count = new AtomicInteger(0);
+
 	public ZayaEvent() {
+		count.incrementAndGet();
 	}
 
 	public ZayaEvent(Job job, Object data) {

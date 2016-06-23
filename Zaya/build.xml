@@ -1,5 +1,7 @@
 <project name="Zaya" default="deploy" xmlns:ivy="antlib:org.apache.ivy.ant">
 
+	<property file="build.properties" />
+
 	<property name="version">0.0.1</property>
 	<property name="jar.name">${ant.project.name}-${version}</property>
 	<property name="lib" value="lib" />
@@ -9,8 +11,6 @@
 	<property name="dist" value="dist" />
 	<property name="dist.jar" value="${dist}/jar" />
 	<property name="dist.ext" value="${dist}/ext" />
-	<property name="deploy.path" value="/Users/tuantv/Works/Git/Mario_Github/Mario/extensions/__lib__">
-	</property>
 
 	<!-- clean cache for ivy -->
 	<target name="clean-cache" description="--> clean the ivy cache">

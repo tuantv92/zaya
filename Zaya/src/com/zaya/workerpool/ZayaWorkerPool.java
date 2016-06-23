@@ -1,9 +1,6 @@
 package com.zaya.workerpool;
 
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.lmax.disruptor.ExceptionHandler;
@@ -24,30 +21,29 @@ public class ZayaWorkerPool implements ZayaWorker, ExceptionHandler<ZayaEvent> {
 	private Disruptor<ZayaEvent> disruptor;
 	private ZayaEventProducer producer;
 
-	public ZayaWorkerPool(int ringBufferSize, int workerSize) {
-		this(ringBufferSize, workerSize, threadPatternName);
+	public ZayaWorkerPool(int workerSize, int ringBufferSize) {
+		this(workerSize, ringBufferSize, threadPatternName);
+		System.out.println("init zaya workerpool with " + workerSize + " wokers and " + ringBufferSize + " ringBuffer");
 	}
 
-	public ZayaWorkerPool(int ringBufferSize, int workerSize, String threadPatternName) {
-		ringBuffer = initWorkerPool(ringBufferSize, workerSize);
+	public ZayaWorkerPool(int workerSize, int ringBufferSize, String threadPatternName) {
+		ringBuffer = initWorkerPool(workerSize, ringBufferSize);
 		producer = new ZayaEventProducer(ringBuffer);
 	}
 
-	@SuppressWarnings("deprecation")
-	private RingBuffer<ZayaEvent> initWorkerPool(int ringBufferSize, int workerSize) {
+	private RingBuffer<ZayaEvent> initWorkerPool(int workerSize, int ringBufferSize) {
 		ZayaEventHandler[] workers = new ZayaEventHandler[workerSize];
 		for (int i = 0; i < workers.length; i++) {
 			workers[i] = new ZayaEventHandler();
 		}
-		disruptor = new Disruptor<ZayaEvent>(ZayaEvent::new, ringBufferSize, new ThreadPoolExecutor(workerSize,
-				workerSize, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new ThreadFactory() {
-					private AtomicInteger threadNumber = new AtomicInteger(1);
+		this.disruptor = new Disruptor<>(ZayaEvent::new, ringBufferSize, new ThreadFactory() {
+			private AtomicInteger threadNumber = new AtomicInteger(1);
 
-					@Override
-					public Thread newThread(Runnable r) {
-						return new Thread(r, String.format(threadPatternName, threadNumber.getAndIncrement()));
-					}
-				}));
+			@Override
+			public Thread newThread(Runnable r) {
+				return new Thread(r, String.format(threadPatternName, threadNumber.getAndIncrement()));
+			}
+		});
 		disruptor.handleEventsWithWorkerPool(workers);
 		return disruptor.start();
 	}

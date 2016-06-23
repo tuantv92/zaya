@@ -12,7 +12,7 @@ public abstract class BaseTask implements Task {
 		return result;
 	}
 
-	public abstract Object _execute(Object data);
+	protected abstract Object _execute(Object data);
 
 	/**
 	 * @return null if have no next task

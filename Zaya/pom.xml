@@ -3,7 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Zaya</groupId>
 	<artifactId>Zaya</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
+	<properties>
+		<deploy.path>/Users/tuantv/Works/Git/Mario_Github/Mario/extensions/__lib__</deploy.path>
+	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory>
@@ -15,6 +18,26 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<configuration>
+							<tasks>
+								<copy todir="${deploy.path}">
+									<fileset dir="target">
+										<include name="Zaya*.jar" />
+									</fileset>
+								</copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
