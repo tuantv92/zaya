@@ -1,17 +1,25 @@
 package com.zaya.job;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.zaya.callback.Callback;
+import com.zaya.task.BaseTask;
 import com.zaya.task.Task;
 
 public abstract class BaseJob implements Job {
 	private Callback callback;
 	private Callback completing;
 	private JobResult result;
+	private final Map<String, Object> environmentVariables = new ConcurrentHashMap<>();
 
 	@Override
 	@Deprecated
 	public Object start(Object data) {
 		Task firstTask = getFirstTask();
+		if (firstTask instanceof BaseTask) {
+			((BaseTask) firstTask).setInitEnviroments(environmentVariables);
+		}
 		if (firstTask != null) {
 			this.setCompleting(new Callback() {
 
@@ -52,6 +60,14 @@ public abstract class BaseJob implements Job {
 
 	public void setResult(JobResult result) {
 		this.result = result;
+	}
+
+	public void setEnviromentVariables(Map<String, Object> variables) {
+		this.environmentVariables.putAll(variables);
+	}
+
+	public Map<String, Object> getEnvironmentVariables() {
+		return environmentVariables;
 	}
 
 }

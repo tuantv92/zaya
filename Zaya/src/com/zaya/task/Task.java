@@ -5,4 +5,5 @@ public interface Task {
 	Object excute(Object data);
 
 	Task getNextTask(Object result);
+
 }

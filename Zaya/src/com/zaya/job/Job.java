@@ -23,5 +23,6 @@ public interface Job {
 	void setResult(JobResult result);
 
 	JobResult getResult();
-
+	
+	
 }
